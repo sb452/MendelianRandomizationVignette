@@ -1,1 +1,8 @@
 test
+
+commands to move files around:
+in public folder
+git checkout -b pull_amy
+git pull MR_private_Amy master
+git push origin pull_amy
+
