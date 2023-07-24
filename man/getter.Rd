@@ -22,6 +22,8 @@
 \alias{$,MRcML-method}
 \alias{$,PIVW-method}
 \alias{$,MVMRcML-method}
+\alias{$,PCGMM-method}
+\alias{$,MVPCGMM-method}
 \title{Applies method $ to different classes}
 \usage{
 \S4method{$}{WeightedMedian}(x, name)
@@ -61,6 +63,10 @@
 \S4method{$}{PIVW}(x, name)
 
 \S4method{$}{MVMRcML}(x, name)
+
+\S4method{$}{PCGMM}(x, name)
+
+\S4method{$}{MVPCGMM}(x, name)
 }
 \arguments{
 \item{x}{Object.}

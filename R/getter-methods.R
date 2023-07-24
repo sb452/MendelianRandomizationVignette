@@ -104,3 +104,12 @@ setMethod("$",
           "MVMRcML",
           function(x, name) slot(x, name))
 
+#' @rdname getter
+setMethod("$",
+          "PCGMM",
+          function(x, name) slot(x, name))
+
+#' @rdname getter
+setMethod("$",
+          "MVPCGMM",
+          function(x, name) slot(x, name))
