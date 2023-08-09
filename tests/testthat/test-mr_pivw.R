@@ -1,4 +1,4 @@
-# tests of the mr_ivw  - the penalized inverse variance weighted method for
+# tests of the mr_pivw  - the penalized inverse variance weighted method for
 # univariable MR
 
 
