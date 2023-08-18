@@ -32,11 +32,10 @@ LinkingTo:
     RcppArmadillo
 VignetteBuilder: knitr
 Suggests:
-    testthat (>=3.0.0),
+    testthat (>= 3.0.0),
     vdiffr,
     randcorr
+Config/testthat/edition: 3
 RoxygenNote: 7.2.3
 NeedsCompilation: yes
-Packaged: 2023-08-08 17:27:33 UTC; stephenb
-Repository: CRAN
-Date/Publication: 2023-08-08 18:10:02 UTC
+

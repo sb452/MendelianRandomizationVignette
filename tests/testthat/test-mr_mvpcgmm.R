@@ -35,7 +35,7 @@ test_that("mvpcgmm applied to correlated object", {
 })
 
 corr_ex <- randcorr(3)
-test_that("mvgmm applied with correlation matrix on exposures", {
+test_that("mvpcgmm applied with correlation matrix on exposures", {
   expect_snapshot(mr_mvpcgmm(Input2,
                              nx=rep(17723,3),
                              ny=17723,
