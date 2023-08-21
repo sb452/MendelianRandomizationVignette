@@ -11,3 +11,108 @@ articles:
   - Univariable_MR_Methods
   - Multivariable_MR_Methods
   - Graphs_for_MR
+
+
+navbar:
+  structure:
+    left:
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    reference:
+      text: Reference
+      href: reference/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Data Input
+        href: articles/Data_Input.html
+      - text: Univariable estimation methods
+        href: articles/Univariable_MR_Methods.html
+      - text: Multivariable estimation methods
+        href: articles/Multivariable_MR_Methods.html
+      - text: Graphical summaries of results
+        href: articles/Graphs_for_MR.html
+
+reference:
+- title: Data input functions
+  contents:
+  - '`mr_input`'
+  - '`mr_mvinput`'
+  - '`phenoscanner`'
+  - '`pheno_input`'
+- title: Univariable methods
+  contents:
+  - '`mr_allmethods`'
+  - '`mr_cML`'
+  - '`mr_conmix`'
+  - '`mr_divw`'
+  - '`mr_egger`'
+  - '`mr_ivw`'
+  - '`mr_hetpen`'
+  - '`mr_lasso`'
+  - '`mr_maxlik`'
+  - '`mr_mbe`'
+  - '`mr_median`'
+  - '`mr_pcgmm`'
+  - '`mr_pivw`'
+- title: Multivariable methods
+  contents:
+  - '`mr_mvivw`'
+  - '`mr_mvlasso`'
+  - '`mr_mvmedian`'
+  - '`mr_mvcML`'
+  - '`mr_mvegger`'
+  - '`mr_mvgmm`'
+  - '`mr_mvpcgmm`'
+- title: Graphical functions
+  contents:
+  - '`mr_plot`'
+  - '`mr_forest`'
+  - '`mr_funnel`'
+  - '`mr_loo`'
+- title: Example datasets
+  contents:
+  - '`calcium`'
+  - '`ldlc`'
+- title: Output descriptions
+  contents:
+  - '`DIVW-class`'
+  - '`Egger-class`'
+  - '`IVW-class`'
+  - '`MaxLik-class`'
+  - '`MRAll-class`'
+  - '`MRcML-class`'
+  - '`MRConMix-class`'
+  - '`MRHetPen-class`'
+  - '`MRInput-class`'
+  - '`MRLasso-class`'
+  - '`MRMBE-class`'
+  - '`MRMVInput-class`'
+  - '`MVEgger-class`'
+  - '`MVGMM-class`'
+  - '`MVIVW-class`'
+  - '`MVLasso-class`'
+  - '`MVMedian-class`'
+  - '`MVMRcML-class`'
+  - '`PIVW-class`'
+  - '`WeightedMedian-class`'
+  - '`MVPCGMM-class`'
+  - '`PCGMM-class`'
+- title: internal
+  contents:
+  - cML_estimate
+  - cML_estimate_random
+  - cML_SdTheta
+  - extract.pheno.csv
+  - invcov_mvmr
+  - MVcML_SdTheta
+  - MVmr_cML
+  - MVmr_cML_DP
+
+
+

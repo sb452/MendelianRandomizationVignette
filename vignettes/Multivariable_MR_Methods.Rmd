@@ -21,6 +21,7 @@ An analytic approach when genetic variants are associated with multiple risk fac
 
 There are two contexts in which we envision the method being used. First, when there is a set of related risk factors, such as lipid fractions. It is difficult to find genetic predictors of HDL-cholesterol that do not also predict LDL-cholesterol and/or triglycerides. Multivariable Mendelian randomization allows genetic variants to be associated with all the risk factors in the model provided that they do not influence the outcome via other pathways. Secondly, when there is a network of risk factors, typically a primary risk factor and a secondary risk factor or mediator. In both cases, multivariable estimates reflect direct causal effects - the result of intervening on the risk factor under analysis while keeping other risk factors in the model fixed.
 
+## the MRMVInput format
 As the multivariable method requires genetic associations with multiple risk factors, a different input function is needed: *mr_mvinput*, which creates an *MRMVInput* object:
 
 ```{r}
@@ -37,6 +38,8 @@ MVMRInputObject.cor <- mr_mvinput(bx = cbind(ldlc, hdlc, trig),
                                   byse = chdloddsse,
                                   correlation = diag(length(ldlc)))
 ```
+
+## Multivariable inverse-variance weighted method
 
 The *mr_mvivw* command performs an extension of the inverse-variance weighted method for multivariable Mendelian randomization, implementing multivariable weighted linear regression (the standard IVW method method performs univariable weighted linear regression) with the intercept term set to zero. As with the standard IVW method, a correlation matrix can be specified. Multivariable Mendelian randomization requires the number of genetic variants to exceed the number of risk factors; if this is not the case, the method will return an error.
 
@@ -62,39 +65,111 @@ MVIVWObject.condF <- mr_mvivw(MVMRInputObject, nx = 17723)
 MVIVWObject.condF
 ```
 
-## Other univariable estimation methods
-
 In addition to the multivariable inverse-variance weighted method, several other multivariable estimation methods are available, which generally are multivariable extensions of univariable methods: multivariable MR-Egger, multivariable median-based method, multivariable lasso method, multivariable constrained maximum likelihood, multivariable GMM, and multivariable principal components GMM.
+
+
+##  Multivariable MR-Egger
+
+Multivariable MR-Egger is an extension of the MR-Egger method to deal with genetic variants that are associated with multiple risk factors, introduced in Rees et al (2017) "Extending the MR-Egger method for multivariable Mendelian randomization to correct for both measured and unmeasured pleiotropy"  DOI: 10.1002/sim.7492
+
+We implement the method using multivariable weighted linear regression. If the variants are correlated, the method is implemented using generalized weighted linear regression; this is hard coded using matrix algebra.
+
+The causal estimate is obtained by regression of the associations with the outcome on the associations with the risk factors, with the intercept estimated and weights being the inverse-variances of the associations with the outcome.
 
 ```{r}
 MVEggerObject <- mr_mvegger(MVMRInputObject)
 
 MVEggerObject
+```
+
+## Multivariable median-based method
+
+Multivariable median method is similar to the univariable weighted median method, except that it is implemented using quantile regression.  This is implemented by multivariable weighted quantile regression, with the quantile set to 0.5 (the median).
+
+
+
+```{r}
+
 
 MVMedianObject <- mr_mvmedian(MVMRInputObject)
 
 MVMedianObject
 
+```
+## Multivariable lasso method
+
+The mr_mvlasso function performs the multivariable MR-Lasso method as described in Grant and Burgess (2020) "Pleiotropy robust methods for multivariable Mendelian randomization" DOI: 10.1002/sim.9156. This applies lasso-type penalization to the direct effects of genetic variants on the outcome. The causal estimates are described as post-lasso estimates, and are obtained by performing the multivariable IVW method using only those genetic variants that are identified as valid by the lasso procedure.
+
+Multivariable MR-Lasso extends the multivariable IVW model to include an intercept term for each genetic variant. These intercept terms represent associations between the genetic variants and the outcome which bypass the risk factors. The regularized regression model is estimated by multivariable weighted linear regression where the intercept terms are subject to lasso-type penalization. The lasso penalization will tend to shrink the intercept terms corresponding to the valid instruments to zero.
+
+The lasso penalty relies on a tuning parameter which controls the level of sparsity. The default is to use a heterogeneity stopping rule, but a fixed value may be specified.
+
+As part of the analysis, the genetic variants are orientated so that all of the associations with one of the risk factors are positive (the first risk factor is used by default). Re-orientation of the genetic variants is performed automatically as part of the function.
+
+The MR-Lasso method is performed in two steps. First, a regularized regression model is fitted, and some genetic variants are identified as valid instruments. Second, causal effects are estimated using standard multivariable IVW with only the valid genetic variants. The post-lasso method will be performed as long as the number of genetic variants identified as valid instruments is greater than the number of risk factors. The default heterogeneity stopping rule will always return more genetic variants as valid instruments than risk factors for identification. The main estimates given by the method are the post-lasso estimates. However, parameter estimates from the regularized regression model used to identify invalid variants are also provided for completeness.
+
+If a substantial proportion of genetic variants are removed from the analysis, the multivariable MR-Lasso method may give a false impression of confidence in the causal estimate due to homogeneity of the variant-specific causal estimates amongst the remaining variants. However, it is not reasonable to claim that there is strong evidence for a causal effect after a large number of variants with heterogeneous estimates have been removed from the analysis.
+
+```{r}
+
+
 MVLassoObject <- mr_mvlasso(MVMRInputObject)
 
 MVLassoObject
+
+```
+
+## Multivariable constrained maximum likelihood
+
+Multivariable MRcML (MVMRcML) is an extension of MRcML to deal with multiple exposures, as described in Lin et al (2023) "Robust multivariable Mendelian randomization based on constrained maximum likelihood" DOI 10.1016/j.ajhg.2023.02.014 . It is robust to both correlated and uncorrelated pleiotropy as with the univariable equivalent.
+
+In practice, the data perturbation (DP) version is preferred in practice for a more robust inference as it can account for the uncertainty in model selection. However, it may take a longer time especially when the number of IVs is large (so the range of K_vec can be large too). One strategy is to try a small range of K (the number of invalid IVs) first (with a small num_pert), then adjust it if the number of selected invalid IVs fall close to the boundary. You can also use other methods, e.g. mr_mvlasso, to get a rough sense of the number of invalid IVs.
+
+Similar to mr_cML, multiple random starting points could be used to find a global minimum.
+
+```{r}
+
 
 MVcMLObject <- mr_mvcML(MVMRInputObject, n = 17723)
 
 MVcMLObject
 
+```
+
+## Multivariable GMM
+
+Multivariable Mendelian randomization via the generalized method of moments method as described in Hansen (1982) "Large sample properties of generalized method of moments estimators" DOI 10.2307/1912775 
+
+The method accounts for overdispersion heterogeneity in genetic variant-outcome associations.
+
+```{r}
+
+
 MVGMMObject <- mr_mvgmm(MVMRInputObject, nx=rep(17723,3), ny=17723)
 
 MVGMMObject
+
+```
+
+## Multivariable principal components GMM
+
+Multivariable principal components GMM is a multivariable version of the PC-GMM method, as described in Patel et al. "Robust use of phenotypic heterogeneity at drug target genes for mechanistic insights: application of cis-multivariable Mendelian randomization to GLP1R gene region" DOI 10.1101/2023.07.20.23292958
+
+This can be used when there are distinct exposures associated with variants at a single gene region. Phenotypic heterogeneity (that is, the genetic associations with the exposures are not collinear) at genomic loci encoding drug targets can be exploited by multivariable Mendelian randomization to provide insight on the pathways by which pharmacological interventions may affect disease risk.
+
+When a Mendelian randomization analysis is performed using correlated genetic variants from a single gene region, there is a tradeoff between using too few variants (and compromising on power) and using too many variants (in which case, estimates can be highly sensitive to small variation in the correlation matrix). This method performs dimension reduction on a weighted version of the genetic correlation matrix to form principal components based on the genetic variants, which are then used as instruments. It is recommended not to include very highly correlated variants in this method (say, r^2 > 0.95), but the method should cope well with variants correlated below this level.
+
+This method provides two-sample multivariable Mendelian randomization estimates and associated confidence intervals that account for overdispersion heterogeneity in dimension-reduced genetic associations (when robust = TRUE).
+
+```{r}
+
 
 MVpcGMMObject <- mr_mvpcgmm(MVMRInputObject.cor, nx=rep(17723,3), ny=17723)
 
 MVpcGMMObject
 ```
 
-Note that the *mr_mvpcgmm* example does not use variants from a single gene region, and so is provided to demonstrate that the code works, rather than to illustrate a recommended use case.
-
-
+Note that this *mr_mvpcgmm* example does not use variants from a single gene region. It is provided to demonstrate that the code works, rather than to illustrate a recommended use case.
 
 
 ## Final note of caution

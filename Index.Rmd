@@ -1,0 +1,88 @@
+---
+output: github_document
+always_allow_html: true
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+The MendelianRandomization R package provides a comprehensive set of methods for performing Mendelian randomization analyses with summarized data. We include methods for both single exposure and multiple exposure analyses, as well as methods to manage correlated instruments. 
+
+Summarized data on genetic associations with the exposure and with the outcome can be obtained from large consortia using websites such as [Phenoscanner](http://www.phenoscanner.medschl.cam.ac.uk/) and [GWAS catalog](https://www.ebi.ac.uk/gwas/). These data can be used for obtaining causal estimates using Mendelian Randomization. For an overview of this approach see [here](https://www.mendelianrandomization.com/index.php/what-is-mr) for links to explanations and examples. 
+
+## Installation
+
+
+```{r, eval = FALSE}
+# Install released version from CRAN
+install.packages("Mendelian Randomization")
+```
+
+
+## Usage
+
+If you are just getting started with MendelianRandomization we recommend starting with the tutorial [vignettes](articles/Data_Input.html), starting with understanding the data input format. 
+
+
+## Bugs and Feedback
+
+If you encounter any issues, bugs, or have suggestions for improvements while using our R package, then let us know. 
+
+Please report bugs to the package maintainer [Stephen Burgess](mailto:sb452@medschl.cam.ac.uk) 
+
+We are particularly keen to include further MR analysis code for other two sample MR methods in our package. Please let us know if you have working R code that is useful to include.  
+You can [fork the package from Github](https://github.com/cran/MendelianRandomization) to test adding additional function compatibility. 
+
+
+## Example Analysis
+
+This is an example analysis of lipid effects on coronary artery disease using the example data included with the package. 
+
+
+```{r Image1}
+library(MendelianRandomization) #load package
+
+MRInputObject <- mr_input(bx = ldlc, 
+                          bxse = ldlcse, 
+                          by = chdlodds, 
+                          byse = chdloddsse)
+```
+
+
+The variables ldlc, hdlc, trig, and chdlodds are the genetic associations with (respectively) LDL-cholesterol, HDL-cholesterol, triglycerides, and coronary heart disease (CHD) risk for 28 genetic variants reported by Waterworth et al (2010). The respective standard errors of the associations are given as ldlcse, hdlcse, trigse, and chdloddsse.
+
+### Perform Mendelian randomization analysis
+
+We can use this package to perform two-sample Mendelian Randomization analysis with a wide variety of methods. Here we show the inverse weighted variance method.
+```{r Image2, echo=TRUE}
+MRAllObject_ivw <- mr_ivw(MRInputObject) # Perform IVW Mendelian randomization analysis
+
+MRAllObject_ivw  #view results
+
+mr_plot(MRInputObject, line="ivw", interactive = FALSE) #plot results
+
+```
+
+### Sensitivity Analysis
+To assess the robustness of our results, we can perform sensitivity analyses, such as the Egger regression and the weighted median method:
+
+```{r Image3}
+MRAllObject <- mr_allmethods(MRInputObject, method="main") # Perform mr-Egger and median Mendelian randomization analysis
+
+MRAllObject  #view results
+
+mr_plot(MRAllObject) #plot results
+
+```
+
+For more methods see the Vignettes on univariable and multivariable methods. 
+
+

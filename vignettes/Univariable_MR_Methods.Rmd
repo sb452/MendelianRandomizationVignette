@@ -226,9 +226,9 @@ HetPenObject.multimode <- mr_hetpen(mr_input(bx = bcrp, bxse = bcrpse,
 HetPenObject.multimode
 ```
 
-## Other univariable estimation methods
-
 Several other estimation methods are available, which we do not describe in detail, as their operation is similar to methods already described above. We would encourage interested analysts to read the help files for each method, which describe the inputs and outputs of each method.
+
+## Contamination mixture method 
 
 The contamination mixture method is introduced in Burgess et al (2020) "A robust and efficient method for Mendelian randomization with hundreds of genetic variants", doi: 10.1038/s41467-019-14156-4. It is similar in spirit to the heterogeneity-penalized method, but much more computationally efficient.
 
@@ -246,6 +246,8 @@ ConMixObject <- mr_conmix(mr_input(bx = ldlc, bxse = ldlcse,
 ConMixObject
 ```
 
+# Lasso method
+
 The lasso method is introduced in Rees et al (2019) "Robust methods in Mendelian randomization via penalization of heterogeneous causal estimates", doi: 10.1371/journal.pone.0222362. It is an outlier-robust method, which excludes variants with heterogeneous variant-specific estimates using lasso penalization.
 
 ```{r}
@@ -260,6 +262,8 @@ LassoObject <- mr_lasso(mr_input(bx = ldlc, bxse = ldlcse,
 LassoObject
 ```
 
+## Debiased inverse-variance weighted method 
+
 The debiased inverse-variance weighted method is a variation on the inverse-variance weighted method that is more robust to bias due to weak instruments and winner's curse. It is described in Ting, Shao, Kang (2021) "Debiased inverse-variance weighted estimator in two-sample summary-data Mendelian randomization", doi: 10.1214/20-aos2027.
 
 ```{r}
@@ -273,6 +277,8 @@ DIVWObject <- mr_divw(mr_input(bx = ldlc, bxse = ldlcse,
 
 DIVWObject
 ```
+
+## Penalized inverse-variance weighted method
 
 The penalized inverse-variance weighted method is a further extension of the inverse-variance weighted and debiased inverse-variance weighted methods to deal with selection of variants more explicitly. It is described in Wang et al (2022) "A novel penalized inverse-variance weighted estimator for Mendelian randomization with applications to COVID-19 outcomes", doi: 10.1111/biom.13732.
 
@@ -289,6 +295,8 @@ PIVWObject <- mr_pivw(mr_input(bx = ldlc, bxse = ldlcse,
 
 PIVWObject
 ```
+
+## Constrained maximum likelihood method 
 
 The constrained maximum likelihood method is a robust method that can account for violation of any of the three instrumental variable assumptions under mild assumptions. In a maximum likelihood framework, this method constrains the number of invalid instruments with horizontal pleiotropy. The number of invalid instruments is asymptotically consistently selected by the Bayesian information criterion. It is described in Xue, Shen, Pan (2021) "Constrained maximum likelihood-based Mendelian randomization robust to both correlated and uncorrelated pleiotropic effects", doi: 10.1016/j.ajhg.2021.05.014.
 
@@ -314,6 +322,8 @@ cMLObject <- mr_cML(mr_input(bx = ldlc, bxse = ldlcse,
 
 cMLObject
 ```
+
+## Principal components GMM method
 
 The principal components GMM method is an implementation of the GMM method with summarized data that is designed for use when performing Mendelian randomization using genetic variants from a single gene region. As an alternative to pruning and clumping approaches, which take a large number of variants from a gene region (potentially hundreds or thousands) and select a small number of uncorrelated (or weakly correlated) variants, the principal components approach performs dimension reduction on the full set of variant associations. The principal components are then used as instrument variables, rather than the individual genetic variants. The method is described in Patel et al (2023) "Robust use of phenotypic heterogeneity at drug target genes for mechanistic insights: application of cis-multivariable Mendelian randomization to GLP1R gene region", doi: 10.1101/2023.07.20.23292958.
 
