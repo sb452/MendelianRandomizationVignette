@@ -1,0 +1,107 @@
+---
+title: "Multivariable Mendelian randomization"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multivariable_MR_Methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+options(htmltools.dir.version = FALSE, width = 75, max.print = 30)
+knitr::opts_knit$set(global.par = TRUE, root.dir = "..")
+knitr::opts_chunk$set(echo = TRUE, fig.align = 'center', dev = 'png', out.width = "90%")
+```
+
+```{r setup, include=FALSE}
+library(MendelianRandomization)
+```
+
+An analytic approach when genetic variants are associated with multiple risk factors is multivariable Mendelian randomization, introduced in Burgess and Thompson (2015) "Multivariable Mendelian randomization: the use of pleiotropic genetic variants to estimate causal effects", doi: 10.1093/aje/kwu283.
+
+There are two contexts in which we envision the method being used. First, when there is a set of related risk factors, such as lipid fractions. It is difficult to find genetic predictors of HDL-cholesterol that do not also predict LDL-cholesterol and/or triglycerides. Multivariable Mendelian randomization allows genetic variants to be associated with all the risk factors in the model provided that they do not influence the outcome via other pathways. Secondly, when there is a network of risk factors, typically a primary risk factor and a secondary risk factor or mediator. In both cases, multivariable estimates reflect direct causal effects - the result of intervening on the risk factor under analysis while keeping other risk factors in the model fixed.
+
+As the multivariable method requires genetic associations with multiple risk factors, a different input function is needed: *mr_mvinput*, which creates an *MRMVInput* object:
+
+```{r}
+MVMRInputObject <- mr_mvinput(bx = cbind(ldlc, hdlc, trig),
+                              bxse = cbind(ldlcse, hdlcse, trigse),
+                              by = chdlodds, 
+                              byse = chdloddsse)
+
+MVMRInputObject
+
+MVMRInputObject.cor <- mr_mvinput(bx = cbind(ldlc, hdlc, trig),
+                                  bxse = cbind(ldlcse, hdlcse, trigse),
+                                  by = chdlodds, 
+                                  byse = chdloddsse,
+                                  correlation = diag(length(ldlc)))
+```
+
+The *mr_mvivw* command performs an extension of the inverse-variance weighted method for multivariable Mendelian randomization, implementing multivariable weighted linear regression (the standard IVW method method performs univariable weighted linear regression) with the intercept term set to zero. As with the standard IVW method, a correlation matrix can be specified. Multivariable Mendelian randomization requires the number of genetic variants to exceed the number of risk factors; if this is not the case, the method will return an error.
+
+```{r}
+MVIVWObject <- mr_mvivw(MVMRInputObject, 
+                         model = "default",
+                         correl = FALSE,
+                         correl.x = NULL,
+                         nx = NA,
+                         distribution = "normal",
+                         alpha = 0.05)
+
+MVIVWObject <- mr_mvivw(MVMRInputObject)
+
+MVIVWObject
+```
+
+*Conditional F statistics:* The *nx* option specifies the sample size(s) for the genetic associations with the exposures (either a single value if these are all equal, or a vector if they differ). The *correl.x* option specifies the correlation between the genetic associations with the exposures. If the genetic assocations with the exposures are estimates in separate datasets, then this correlation matrix should be set to the identity matrix (this is the default option). This matrix cannot be calculated from summarized data; if it is unknown, then a sensitivity analysis for its value is recommended. The *nx* and *correl.x* options are not used in the calculation of estimates from the multivariable inverse-variance weighted method method, but only in the calculation of conditional F statistics. Conditional F statistics are the relevant measure of instrument strength for multivariable Mendelian randomization. For more detail, see Sanderson, Spiller, Bowden (2021) "Testing and correcting for weak and pleiotropic instruments in two-sample multivariable Mendelian randomization", doi: 10.1002/sim.9133.
+
+```{r}
+MVIVWObject.condF <- mr_mvivw(MVMRInputObject, nx = 17723)
+
+MVIVWObject.condF
+```
+
+## Other univariable estimation methods
+
+In addition to the multivariable inverse-variance weighted method, several other multivariable estimation methods are available, which generally are multivariable extensions of univariable methods: multivariable MR-Egger, multivariable median-based method, multivariable lasso method, multivariable constrained maximum likelihood, multivariable GMM, and multivariable principal components GMM.
+
+```{r}
+MVEggerObject <- mr_mvegger(MVMRInputObject)
+
+MVEggerObject
+
+MVMedianObject <- mr_mvmedian(MVMRInputObject)
+
+MVMedianObject
+
+MVLassoObject <- mr_mvlasso(MVMRInputObject)
+
+MVLassoObject
+
+MVcMLObject <- mr_mvcML(MVMRInputObject, n = 17723)
+
+MVcMLObject
+
+MVGMMObject <- mr_mvgmm(MVMRInputObject, nx=rep(17723,3), ny=17723)
+
+MVGMMObject
+
+MVpcGMMObject <- mr_mvpcgmm(MVMRInputObject.cor, nx=rep(17723,3), ny=17723)
+
+MVpcGMMObject
+```
+
+Note that the *mr_mvpcgmm* example does not use variants from a single gene region, and so is provided to demonstrate that the code works, rather than to illustrate a recommended use case.
+
+
+
+
+## Final note of caution
+
+Particularly with the development of Mendelian randomization with summarized data, two-sample Mendelian randomization (where associations with the risk factor and with the outcome are taken from separate datasets), and bioinformatic tools for obtaining and analysing summarized data (including this package), Mendelian randomization is becoming increasingly accessible as a tool for answering epidemiological questions. This is undoubtably a Good Thing.
+
+However, it is important to remember that the difficult part of a Mendelian randomization analysis is not the computational method, but deciding what should go into the analysis: which risk factor, which outcome, and (most importantly) which genetic variants. Hopefully, the availability of these tools will enable less attention to be paid to the mechanics of the analysis, and more attention to these choices.
+
+The note of caution is that tools that make Mendelian randomization simple to perform run the risk of encouraging large numbers of speculative analyses to be performed in an unprincipled way. It is important that Mendelian randomization is not performed in a way that avoids critical thought. In releasing this package, the hope is that it will lead to more comprehensive and more reproducible causal inferences from Mendelian randomization, and not simply add more noise to the literature.
+

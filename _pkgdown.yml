@@ -1,4 +1,13 @@
 url: ~
 template:
   bootstrap: 5
+  bootswatch: cerulean
 
+articles:
+- title: Vignettes
+  navbar: ~
+  contents:
+  - Data_Input
+  - Univariable_MR_Methods
+  - Multivariable_MR_Methods
+  - Graphs_for_MR

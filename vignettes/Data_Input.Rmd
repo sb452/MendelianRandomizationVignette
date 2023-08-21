@@ -1,0 +1,107 @@
+---
+title: "Data Input"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Data_Input}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+options(htmltools.dir.version = FALSE, width = 75, max.print = 30)
+knitr::opts_knit$set(global.par = TRUE, root.dir = "..")
+knitr::opts_chunk$set(echo = TRUE, fig.align = 'center', dev = 'png', out.width = "90%")
+```
+
+```{r setup, include=FALSE}
+library(MendelianRandomization)
+```
+
+
+
+The package uses a special class called *MRInput* within the analyses in order to pass in all necessary information through one simple structure rather than inserting the data in parts. In order to make an *MRInput* object, one can do the following:
+
+- specify values for each slot separately, or
+- extract values from the PhenoScanner web-based database
+
+We focus initially on the first option.
+
+## The MRInput format
+The *MRInput* object has the following "slots" :
+
+- *betaX* and *betaXse* are both numeric vectors describing the associations of the genetic variants with the exposure. *betaX* are the beta-coefficients from univariable regression analyses of the exposure on each genetic variant in turn, and *betaXse* are the standard errors.
+- *betaY* and *betaYse* are both numeric vectors describing the associations of the genetic variants with the outcome. *betaY* are the beta-coefficients from regression analyses of the outcome on each genetic variant in turn, and *betaYse* are the standard errors.
+- *correlation* is a matrix with the signed correlations between the variants. If a correlation matrix is not provided, it is assumed that the variants are uncorrelated.
+- *exposure* is a character string giving the name of the risk factor, e.g. LDL-cholesterol.
+- *outcome* is a character string giving the name of the outcome, e.g. coronary heart disease. These inputs are only used in the graphing functions.
+- *snps* is a character vector of the names of the various genetic variants (SNPs) in the dataset, e.g. rs12785878. It is not necessary to name the exposure, outcome, or SNPs, but these names are used in the graphing functions and may be helpful for keeping track of various analyses.
+
+## Create MRInput object manually
+
+To generate the *MRInput* object slot by slot, one can use the *mr_input()* function :
+
+```{r}
+MRInputObject <- mr_input(bx = ldlc, 
+                          bxse = ldlcse, 
+                          by = chdlodds, 
+                          byse = chdloddsse)
+
+MRInputObject  # example with uncorrelated variants
+
+MRInputObject.cor <- mr_input(bx = calcium, 
+                              bxse = calciumse, 
+                              by = fastgluc, 
+                              byse = fastglucse,
+                              corr = calc.rho)
+
+MRInputObject.cor  # example with correlated variants
+
+```
+
+It is not necessary for all the slots to be filled. For example, some of the methods do not require *bxse* to be specified; for example, the *mr_ivw* function will still run with *bxse* set to zeros. If the vectors *bx*, *bxse*, *by*, and *byse* are not of equal length, then an error will be reported. Note that the package does not implement any harmonization of associations to the same effect allele; this must be done by the user.
+
+It is also possible to run the analysis using the syntax:
+```{r, eval=FALSE}
+MRInputObject <- mr_input(ldlc, ldlcse, chdlodds, chdloddsse)
+```
+However, care must be taken in this case to give the vectors in the correct order (that is: *bx, bxse, by, byse*).
+
+## Extracting association estimates from PhenoScanner
+
+The PhenoScanner bioinformatic tool (http://phenoscanner.medschl.cam.ac.uk) is a curated database of publicly available results from large-scale genetic association studies. The database currently contains over 65 billion associations and association results and over 150 million unique genetic variants, mostly single nucleotide polymorphisms.
+
+PhenoScanner can be called directly from the MendelianRandomization package using the *pheno_input()* function. This creates an *MRInput* function, which can be directly used as an input to any of the estimation functions. For example:
+
+```{r, eval = FALSE}
+mr_ivw(pheno_input(snps=c("rs12916", "rs2479409", 
+                          "rs217434", "rs1367117",
+                          "rs4299376", "rs629301",
+                          "rs4420638", "rs6511720"),
+                   exposure = "Low density lipoprotein",
+                   pmidE = "24097068", 
+                   ancestryE = "European",
+                   outcome = "Coronary artery disease",
+                   pmidO = "26343387",
+                   ancestryO = "Mixed"))
+```
+
+(We do not implement this code here, as it requires a connection to the internet, and hence produces an error if an internet connection cannot be found. But please copy it and try it for yourself!)
+
+In order to obtain the relevant summary estimates, run the *pheno_input()* function with:
+  - *snps* is a character vector giving the rsid identifiers of the genetic variants.
+  - *exposure* is a character vector giving the name of the risk factor.
+  - *pmidE* is the PubMed ID of the paper where the association estimates with the exposure were first published.
+  - *ancestryE* is the ancestry of the participants on whom the association estimates with the exposure were estimated. (For some traits and PubMed IDs, results are given for multiple ancestries.) Usually, ancestry is *"European"* or *"Mixed"*.
+  - *outcome* is a character vector giving the name of the outcome.
+  - *pmidO* is the PubMed ID of the paper where the association estimates with the outcome were first published.
+  - *ancestryO* is the ancestry of the participants on whom the association estimates with the exposure were estimated.
+
+We note that the spelling of the exposure and outcome, the PubMed ID, and the ancestry information need to correspond exactly to the values in the PhenoScanner dataset. If these are not spelled exactly as in the PhenoScanner dataset (including upper/lower case), the association estimates will not be found.
+
+## Example data
+
+Two sets of data are provided as part of this package:
+
+- *ldlc, ldlcse, hdlc, hdlcse, trig, trigse, chdlodds, chdloddsse*: these are the associations (beta-coefficients and standard errors) of 28 genetic variants with LDL-cholesterol, HDL-cholesterol, triglycerides, and coronary heart disease (CHD) risk (associations with CHD risk are log odds ratios) taken from Waterworth et al (2011) "Genetic variants influencing circulating lipid levels and risk of coronary artery disease", doi: 10.1161/atvbaha.109.201020.
+- *calcium, calciumse, fastgluc, fastglucse*: these are the associations (beta-coefficients and standard errors) of 7 genetic variants in the *CASR* gene region. These 7 variants are all correlated, and the correlation matrix is provided as *calc.rho*. These data were analysed in Burgess et al (2015) "Using published data in Mendelian randomization: a blueprint for efficient identification of causal risk factors", doi: 10.1007/s10654-015-0011-z.
+
