@@ -2,7 +2,6 @@ url: https://amymariemason.github.io/MR_public_scratch/
 template:
   bootstrap: 5
   bootswatch: cerulean
-
 articles:
 - title: Vignettes
   navbar: ~
@@ -11,8 +10,6 @@ articles:
   - Univariable_MR_Methods
   - Multivariable_MR_Methods
   - Graphs_for_MR
-
-
 navbar:
   structure:
     left:
@@ -37,7 +34,6 @@ navbar:
         href: articles/Multivariable_MR_Methods.html
       - text: Graphical summaries of results
         href: articles/Graphs_for_MR.html
-
 reference:
 - title: Data input functions
   contents:
@@ -113,6 +109,4 @@ reference:
   - MVcML_SdTheta
   - MVmr_cML
   - MVmr_cML_DP
-
-
 
