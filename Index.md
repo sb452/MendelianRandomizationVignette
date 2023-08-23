@@ -1,5 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/amymariemason/MR_public_scratch/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/amymariemason/MR_public_scratch/actions/workflows/R-CMD-check.yaml)
+
+<!-- badges: end -->
 
 The MendelianRandomization R package provides a comprehensive set of
 methods for performing Mendelian randomization analyses with summarized

@@ -1,4 +1,4 @@
-# mvgmm applied to standard object
+# mvpcgmm applied to standard object
 
     Code
       mr_mvpcgmm(Input1, nx = rep(17723, 3), ny = 17723)
@@ -23,7 +23,7 @@
       
       Heterogeneity test statistic = 21.5116
 
-# mvgmm applied to correlated object
+# mvpcgmm applied to correlated object
 
     Code
       mr_mvpcgmm(Input2, nx = rep(17723, 3), ny = 17723)
@@ -48,7 +48,7 @@
       
       Heterogeneity test statistic = 14.9855
 
-# mvgmm applied with correlation matrix on exposures
+# mvpcgmm applied with correlation matrix on exposures
 
     Code
       mr_mvpcgmm(Input2, nx = rep(17723, 3), ny = 17723, cor.x = corr_ex)
@@ -71,7 +71,7 @@
       
       Heterogeneity test statistic = 15.0000
 
-# mvgmm with r changed
+# mvpcgmm with r changed
 
     Code
       mr_mvpcgmm(Input2, nx = rep(17723, 3), ny = 17723, r = 4)
@@ -96,7 +96,7 @@
       
       Heterogeneity test statistic = 0.0186
 
-# mvgmm with thres changed
+# mvpcgmm with thres changed
 
     Code
       mr_mvpcgmm(Input2, nx = rep(17723, 3), ny = 17723, thres = 0.85)
@@ -121,7 +121,7 @@
       
       Heterogeneity test statistic = 0.9610
 
-# mvgmm with robust off
+# mvpcgmm with robust off
 
     Code
       mr_mvpcgmm(Input2, nx = rep(17723, 3), ny = 17723, robust = FALSE)
@@ -144,7 +144,7 @@
       
       Heterogeneity test statistic = 32.0349 on 15 degrees of freedom, (p-value = 0.0064)
 
-# mvgmm with alpha changed
+# mvpcgmm with alpha changed
 
     Code
       mr_mvpcgmm(Input2, nx = rep(17723, 3), ny = 17723, alpha = 0.001)
