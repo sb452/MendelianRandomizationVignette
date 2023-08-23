@@ -2,7 +2,7 @@
 title: "Univariable estimation methods"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Univariable_MR_Methods}
+  %\VignetteIndexEntry{Univariable estimation methods}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 

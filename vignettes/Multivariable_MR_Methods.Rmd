@@ -2,7 +2,7 @@
 title: "Multivariable Mendelian randomization"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Multivariable_MR_Methods}
+  %\VignetteIndexEntry{Multivariable Mendelian randomization}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -2,7 +2,7 @@
 title: "Graphical summaries of results"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Graphs_for_MR}
+  %\VignetteIndexEntry{Graphical summaries of results}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
