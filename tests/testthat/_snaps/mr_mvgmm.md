@@ -17,7 +17,7 @@
        exposure_3    0.686     0.239  0.217, 1.155   0.004        13.3
       ------------------------------------------------------------------
       
-      Overdispersion heterogeneity parameter estimate = 17.36878 
+      Overdispersion heterogeneity parameter estimate = 17.369 
       
       Heterogeneity test statistic = 24.9273
 
@@ -41,7 +41,7 @@
        exposure_3    0.509     0.036  0.439,  0.578   0.000          NA
       ------------------------------------------------------------------
       
-      Overdispersion heterogeneity parameter estimate = -11.34375 
+      Overdispersion heterogeneity parameter estimate = -11.344 
       
       Heterogeneity test statistic = 704.0559
 
@@ -62,7 +62,7 @@
        exposure_3    0.667     0.239  0.198, 1.136   0.005        28.5
       ------------------------------------------------------------------
       
-      Overdispersion heterogeneity parameter estimate = 16.8875 
+      Overdispersion heterogeneity parameter estimate = 16.887 
       
       Heterogeneity test statistic = 24.8485
 
@@ -106,7 +106,7 @@
        exposure_3    0.686     0.239  -0.101, 1.474   0.004        13.3
       ------------------------------------------------------------------
       
-      Overdispersion heterogeneity parameter estimate = 17.36878 
+      Overdispersion heterogeneity parameter estimate = 17.369 
       
       Heterogeneity test statistic = 24.9273
 

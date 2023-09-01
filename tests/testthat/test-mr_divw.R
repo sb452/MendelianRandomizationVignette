@@ -1,6 +1,6 @@
 # tests of the mr_divw  - the Debiased inverse variance weighted method for
 # univariable MR
-library(vdiffr)
+
 
 # create MRInput object
 Input1<- mr_input(ldlc, ldlcse, chdlodds, chdloddsse)
@@ -22,7 +22,7 @@ test_that("divw with changed alpha", {
   expect_snapshot(mr_divw(Input1, alpha=0.001))
 })
 
-
+library(vdiffr)
 test_that("divw with diagnostics", {
   divw_plot<- mr_divw(Input1, diagnostics = TRUE)
   expect_doppelganger("divw_plot", divw_plot)
